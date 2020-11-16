@@ -12,7 +12,7 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-
+    //TODO comentry
     @Override
     public void start(Stage stage) {
         ImageFactory.getInstance().load();
