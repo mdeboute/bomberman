@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="readme.css">
 
 
-# Projet de POO
+# Projet de POO [![time tracker](https://wakatime.com/badge/github/mdeboute/bomberman_POO.svg)](https://wakatime.com/badge/github/mdeboute/bomberman_POO)
 
 Réalisation d'un jeu vidéo 2D : **UBomb**.
 
