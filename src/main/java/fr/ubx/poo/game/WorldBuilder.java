@@ -3,6 +3,8 @@ package fr.ubx.poo.game;
 import fr.ubx.poo.model.decor.Decor;
 import fr.ubx.poo.model.decor.Stone;
 import fr.ubx.poo.model.decor.Tree;
+import fr.ubx.poo.model.bonus.*;
+import fr.ubx.poo.model.decor.*;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -32,6 +34,10 @@ public class WorldBuilder {
                 return new Stone();
             case Tree:
                 return new Tree();
+            case Box:
+                return new Box();
+            case Key:
+                return new Key();
             default:
                 return null;
         }
