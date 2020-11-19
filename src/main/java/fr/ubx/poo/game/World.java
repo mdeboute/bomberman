@@ -78,7 +78,7 @@ public class World {
     }
 
     public boolean isInside(Position position) {
-        return true; // to update
+        return position.inside(this.dimension);
     }
 
     public boolean isEmpty(Position position) {
