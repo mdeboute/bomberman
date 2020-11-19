@@ -11,6 +11,9 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.ArrayList;
 import java.util.List;
+import fr.ubx.poo.model.go.*;
+import fr.ubx.poo.model.bonus.*;
+
 
 public class World {
     private final Map<Position, Decor> grid;
@@ -82,6 +85,6 @@ public class World {
     }
 
     public boolean isEmpty(Position position) {
-        return grid.get(position) == null;
+        return grid.get(position) instanceof Pickable  || grid.get(position) == null;
     }
 }

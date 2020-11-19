@@ -25,6 +25,8 @@ public class Game {
     private final List<Monster> monsterList;
     private final String worldPath;
     public int initPlayerLives;
+    public String prefix;
+    public int levels;
 
     public Game(String worldPath) {
         world = new WorldStatic();
@@ -60,6 +62,8 @@ public class Game {
             // load the configuration file
             prop.load(input);
             initPlayerLives = Integer.parseInt(prop.getProperty("lives", "3"));
+            levels = Integer.parseInt(prop.getProperty("levels","3"));
+            prefix = prop.getProperty("prefix", "level");
         } catch (IOException ex) {
             System.err.println("Error loading configuration");
         }
