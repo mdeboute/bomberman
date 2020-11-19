@@ -10,6 +10,7 @@ import fr.ubx.poo.game.Position;
 import fr.ubx.poo.model.bonus.*;
 import fr.ubx.poo.model.decor.*;
 import fr.ubx.poo.model.go.character.Player;
+import fr.ubx.poo.model.go.character.Princess;
 import fr.ubx.poo.view.image.ImageFactory;
 import javafx.scene.layout.Pane;
 
@@ -33,5 +34,10 @@ public final class SpriteFactory {
 
     public static Sprite createPlayer(Pane layer, Player player) {
         return new SpritePlayer(layer, player);
+    }
+
+    public static Sprite createPrincess(Pane layer, Princess princess) {
+        ImageFactory factory = ImageFactory.getInstance();
+        return new SpritePrincess(layer, factory.get(PRINCESS), princess);
     }
 }
