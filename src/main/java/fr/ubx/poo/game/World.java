@@ -19,6 +19,7 @@ public class World {
     private final Map<Position, Decor> grid;
     private final WorldEntity[][] raw;
     public final Dimension dimension;
+    private boolean changeRequest=true;
 
     public World(WorldEntity[][] raw) {
         this.raw = raw;
@@ -86,5 +87,13 @@ public class World {
 
     public boolean isEmpty(Position position) {
         return grid.get(position) instanceof Pickable  || grid.get(position) == null;
+    }
+
+    public void ChangeRequest() {
+        changeRequest=!changeRequest;
+    }
+
+    public boolean hasChanged() {
+        return changeRequest;
     }
 }
