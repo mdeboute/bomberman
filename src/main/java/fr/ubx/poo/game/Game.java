@@ -5,36 +5,48 @@
 package fr.ubx.poo.game;
 
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
+import static fr.ubx.poo.game.WorldEntity.*;
 
-import fr.ubx.poo.model.go.character.Monster;
+
 import fr.ubx.poo.model.go.character.Player;
-import fr.ubx.poo.model.go.character.Princess;
 
 public class Game {
-
-    private final World world;
+    // liste de monde (world)
+    private final List<World> worlds;
+    // monde courant (en cours)
+    private World world;
     private final Player player;
-    private final Princess princess;
-    private final List<Monster> monsterList;
     private final String worldPath;
     public int initPlayerLives;
-    public String prefix;
-    public int levels;
+    // nombre du niveau courant
+    private int level=1;
+    // nombre de levels (world) dans le game
+    private int levels;
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getLevel() {
+        return level;
+    }
 
     public Game(String worldPath) {
-        world = new WorldStatic();
-        monsterList = new ArrayList<>();
-        this.worldPath = worldPath;
+        //load la config pour avoir le nombres de levels
         loadConfig(worldPath);
+        // créer la liste des worlds
+        worlds=new ArrayList<World>(levels);
+        for(int i=1;i<=levels;i++){
+            worlds.add(new WorldFromFile(worldPath,i));
+        }
+        // commence pas le level 1
+        world=worlds.get(0);
+        this.worldPath = worldPath;
         Position positionPlayer = null;
-        Position positionPrincess = null;
         try {
             positionPlayer = world.findPlayer();
             player = new Player(this, positionPlayer);
@@ -42,28 +54,24 @@ public class Game {
             System.err.println("Position not found : " + e.getLocalizedMessage());
             throw new RuntimeException(e);
         }
-        try {
-            positionPrincess = world.findPrincess();
-            princess = new Princess(this, positionPrincess);
-        } catch (PositionNotFoundException e) {
-            System.err.println("Position not found : " + e.getLocalizedMessage());
-            throw new RuntimeException(e);
-        }
-        loadMonsters();
     }
 
     public int getInitPlayerLives() {
         return initPlayerLives;
     }
 
+    public int getLevels(){return levels;}
+
     private void loadConfig(String path) {
         try (InputStream input = new FileInputStream(new File(path, "config.properties"))) {
             Properties prop = new Properties();
             // load the configuration file
             prop.load(input);
-            initPlayerLives = Integer.parseInt(prop.getProperty("lives", "3"));
-            levels = Integer.parseInt(prop.getProperty("levels","3"));
-            prefix = prop.getProperty("prefix", "level");
+            //test
+            initPlayerLives = Integer.parseInt(prop.getProperty("lives", "2"));
+            //nombre de levels
+            levels = Integer.parseInt(prop.getProperty("levels", "1"));
+
         } catch (IOException ex) {
             System.err.println("Error loading configuration");
         }
@@ -77,18 +85,8 @@ public class Game {
         return this.player;
     }
 
-    public Princess getPrincess() {
-        return this.princess;
+    public void updatelevelrequest() {
+        if(this.getLevels()>=this.getLevel())
+            this.world = worlds.get(this.level-1);
     }
-
-    private void loadMonsters() {
-        for (int i = 0; i < world.findMonsters().size(); i++) {
-            monsterList.add(new Monster(this, world.findMonsters().get(i)));
-        }
-    }
-
-    public List<Monster> getMonsterList() {
-        return this.monsterList;
-    }
-
 }
