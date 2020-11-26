@@ -6,26 +6,31 @@ package fr.ubx.poo.game;
 
 import fr.ubx.poo.model.decor.Decor;
 
-import java.util.Collection;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 import java.util.function.BiConsumer;
-import java.util.ArrayList;
-import java.util.List;
-import fr.ubx.poo.model.go.*;
-import fr.ubx.poo.model.bonus.*;
 
+import static fr.ubx.poo.game.WorldEntity.Empty;
+import static fr.ubx.poo.game.WorldEntity.Player;
 
 public class World {
     private final Map<Position, Decor> grid;
     private final WorldEntity[][] raw;
     public final Dimension dimension;
-    private boolean changeRequest=true;
+    public final int level;
+    private boolean changed = true;
 
     public World(WorldEntity[][] raw) {
         this.raw = raw;
         dimension = new Dimension(raw.length, raw[0].length);
         grid = WorldBuilder.build(raw, dimension);
+        this.level=1;
     }
+
+    public boolean hasChanged(){
+        return changed ;
+    }
+
 
     public Position findPlayer() throws PositionNotFoundException {
         for (int x = 0; x < dimension.width; x++) {
@@ -36,29 +41,6 @@ public class World {
             }
         }
         throw new PositionNotFoundException("Player");
-    }
-
-    public Position findPrincess() throws PositionNotFoundException {
-        for (int x = 0; x < dimension.width; x++) {
-            for (int y = 0; y < dimension.height; y++) {
-                if (raw[y][x] == WorldEntity.Princess) {
-                    return new Position(x, y);
-                }
-            }
-        }
-        throw new PositionNotFoundException("Princess");
-    }
-
-    public List<Position> findMonsters() {
-        List<Position> positions = new ArrayList<>();
-        for (int x = 0; x < dimension.width; x++) {
-            for (int y = 0; y < dimension.height; y++) {
-                if (raw[y][x] == WorldEntity.Monster) {
-                    positions.add(new Position(x, y));
-                }
-            }
-        }
-        return positions;
     }
 
     public Decor get(Position position) {
@@ -82,18 +64,15 @@ public class World {
     }
 
     public boolean isInside(Position position) {
-        return position.inside(this.dimension);
+        return true; // to update
     }
 
     public boolean isEmpty(Position position) {
-        return grid.get(position) instanceof Pickable  || grid.get(position) == null;
+        return grid.get(position) == null;
     }
 
     public void ChangeRequest() {
-        changeRequest=!changeRequest;
+        changed=!changed;
     }
 
-    public boolean hasChanged() {
-        return changeRequest;
-    }
 }

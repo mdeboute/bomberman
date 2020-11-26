@@ -1,10 +1,7 @@
 package fr.ubx.poo.game;
 
-import fr.ubx.poo.model.decor.Decor;
-import fr.ubx.poo.model.decor.Stone;
-import fr.ubx.poo.model.decor.Tree;
-import fr.ubx.poo.model.bonus.*;
 import fr.ubx.poo.model.decor.*;
+import fr.ubx.poo.model.decor.pickable.*;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -30,14 +27,34 @@ public class WorldBuilder {
 
     private static Decor processEntity(WorldEntity entity) {
         switch (entity) {
+            case Key:
+                return new Key();
+            case Monster:
+                return new Monster();
+            case DoorNextOpened:
+                return new DoorNextOpened();
+            case DoorPrevOpened:
+                return new DoorPrevOpened();
+            case DoorNextClosed:
+                return new DoorNextClosed();
+            case Heart:
+                return new Heart();
+            case BombNumberDec:
+                return new BombNumberDec();
+            case BombNumberInc:
+                return new BombNumberInc();
+            case BombRangeDec:
+                return new BombRangeDec();
+            case BombRangeInc:
+                return new BombRangeInc();
+            case Princess:
+                return new Princess();
+            case Box:
+                return new Box();
             case Stone:
                 return new Stone();
             case Tree:
                 return new Tree();
-            case Box:
-                return new Box();
-            case Key:
-                return new Key();
             default:
                 return null;
         }
