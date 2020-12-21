@@ -11,7 +11,7 @@ import static fr.ubx.poo.game.WorldEntity.*;
 public class WorldFromFile extends World {
 
     public WorldFromFile(String path,int n){
-        super( TabFromFile(path,n));
+        super( TabFromFile(path,n), n );
     }
 
 
