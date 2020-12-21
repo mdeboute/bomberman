@@ -18,9 +18,10 @@ public class Bomb extends GameObject {
 
     @Override
     public void traitement(Player player) {
-        player.increaseHeart();
+        //TODO
 
-        traitement=true;
+
+        traitement=false;
 
     }
 

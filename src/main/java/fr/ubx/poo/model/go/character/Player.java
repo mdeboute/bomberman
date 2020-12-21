@@ -85,6 +85,7 @@ public class Player extends GameObject implements Movable {
             if (game.getWorld().get(DoorPosition) instanceof DoorNextClosed && getKeyValue() > 0) {
                 clear();
                 game.getWorld().set(DoorPosition, new DoorNextOpened());
+                game.getWorld().setRaw(WorldEntity.DoorNextOpened,new Position(DoorPosition));
                 KeyValue -= 1;
             }
             DoorOpenRequested = false;
@@ -101,10 +102,6 @@ public class Player extends GameObject implements Movable {
     public void clear() {
         game.getWorld().clear(direction.nextPosition(getPosition()));
         game.getWorld().ChangeRequest();
-    }
-
-    public Dimension getDimension() {
-        return game.getWorld().dimension;
     }
 
     public void prevLevelRequest() {
@@ -141,7 +138,7 @@ public class Player extends GameObject implements Movable {
         Position playerPos = this.getPosition();
         Position boxPosition = direction.nextPosition(playerPos);
         Position boxNextPosition = direction.nextPosition(boxPosition);
-        Dimension dimension = this.getDimension();
+        Dimension dimension = game.getWorld().dimension;
         if (boxNextPosition.inside(dimension) && game.getWorld().isEmpty(boxNextPosition)) {
             game.getWorld().set(boxNextPosition, new Box());
             this.clear();

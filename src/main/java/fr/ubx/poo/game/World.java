@@ -16,8 +16,8 @@ public class World {
     public final Dimension dimension;
     public static int level;
     private boolean changed = false;
-    protected Position doorNextOpenedPosition;
-    protected Position doorPrevOpenedPosition;
+    protected Position doorNextOpenedPosition=null;
+    protected Position doorPrevOpenedPosition=null;
     private LinkedList<Bomb> listBomb=new LinkedList<Bomb>();
 
     public World(WorldEntity[][] raw, int level) {
@@ -25,8 +25,10 @@ public class World {
         dimension = new Dimension(raw.length, raw[0].length);
         grid = WorldBuilder.build(raw, dimension);
         this.level = level;
-        doorNextOpenedPosition = getPrevLevelPositionBis();
-        doorPrevOpenedPosition = getNextLevelPositionBis();
+    }
+
+    public void setRaw(WorldEntity w, Position pos ){
+        raw[pos.y][pos.x]=w;
     }
 
     public List<Bomb> getListBomb() {
@@ -39,10 +41,16 @@ public class World {
     }
 
     public Position getNextLevelPosition() {
+        if(doorPrevOpenedPosition==null){
+            doorPrevOpenedPosition=getNextLevelPositionBis();
+        }
         return doorPrevOpenedPosition;
     }
 
     public Position getPrevLevelPosition() {
+        if(doorNextOpenedPosition==null){
+            doorNextOpenedPosition=getPrevLevelPositionBis();
+        }
         return doorNextOpenedPosition;
     }
 
