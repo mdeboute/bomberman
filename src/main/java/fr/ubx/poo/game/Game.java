@@ -13,36 +13,34 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
 public class Game {
-    private  List<World> worlds;
+    private final List<World> worlds;
     private World world;
     private final Player player;
     private final String worldPath;
     public int initPlayerLives;
-    private int currentLevel = 1;
+    private static int currentLevel = 1;
     private static int levels;
-    private boolean levelChange=false;
-    private List<List<Bomb>> ListBombs = new ArrayList<List<Bomb>>() ;
+    private boolean levelChange = false;
+    private final List<List<Bomb>> ListBombs = new ArrayList<>();
 
     public List<List<Bomb>> getListBombs() {
         return ListBombs;
     }
 
-    public boolean hasLevelChanged(){
+    public boolean hasLevelChanged() {
         return levelChange;
     }
 
-    public void levelChangeRequest(){
-        levelChange=!levelChange;
+    public void levelChangeRequest() {
+        levelChange = true;
     }
 
-
-    public void setCurrentLevel(int currentLevel) {
-        this.currentLevel = currentLevel;
+    public void levelChangedRequestDone() {
+        levelChange = false;
     }
 
     public int getCurrentLevel() {
@@ -53,11 +51,10 @@ public class Game {
         loadConfig(worldPath);
         worlds = new ArrayList<World>(levels);
         for (int i = 1; i <= levels; i++) {
-            World Level_i=new WorldFromFile(worldPath, i);
+            World Level_i = new WorldFromFile(worldPath, i);
             worlds.add(Level_i);
             ListBombs.add(Level_i.getListBomb());
         }
-
         this.world = worlds.get(0);
         this.worldPath = worldPath;
         Position positionPlayer = null;
@@ -101,19 +98,29 @@ public class Game {
         return this.player;
     }
 
-    public boolean updateLevelRequest(int i) {
-
-        if (this.getLevels() >= this.getCurrentLevel()+i && this.getCurrentLevel()+i>=1 ) {
-            this.world = worlds.get(this.currentLevel + i - 1);
-            this.currentLevel=this.currentLevel+i;
-            return true;
+    public Position updateLevelRequestNext() throws PositionNotFoundException {
+        if (this.getLevels() >= this.getCurrentLevel() + 1 && this.getCurrentLevel() + 1 >= 1){
+            World worldTmp= worlds.get( (currentLevel - 1) + 1);
+            Position newPosition = worldTmp.getNextLevelPosition();
+            if(newPosition!=null){
+                this.world = worldTmp;
+                currentLevel = currentLevel + 1;
+                return newPosition;
+            }
         }
-        return false;
+        throw new PositionNotFoundException("CHANGEMENT DE MONDE IMPOSSIBLE");
     }
 
-
-    public int getNumberBombs() {
-        int m= ListBombs.stream().mapToInt(List::size).sum();
-        return m;
+    public Position updateLevelRequestPrev() throws PositionNotFoundException {
+        if (this.getLevels() >= this.getCurrentLevel() - 1 && this.getCurrentLevel() - 1 >= 1){
+            World worldTmp= worlds.get( (currentLevel - 1) - 1);
+            Position newPosition = worldTmp.getPrevLevelPosition();
+            if(newPosition!=null){
+                this.world = worldTmp;
+                currentLevel = currentLevel - 1;
+                return newPosition;
+            }
+        }
+        throw new PositionNotFoundException("CHANGEMENT DE MONDE IMPOSSIBLE");
     }
 }

@@ -3,6 +3,7 @@ package fr.ubx.poo.game;
 import fr.ubx.poo.model.decor.*;
 import fr.ubx.poo.model.decor.movable.Box;
 import fr.ubx.poo.model.decor.pickable.*;
+import fr.ubx.poo.model.decor.pickable.bonus.*;
 
 import java.util.Hashtable;
 import java.util.Map;

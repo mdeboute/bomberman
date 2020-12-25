@@ -16,4 +16,8 @@ public class DoorNextOpened extends Pickable {
     }
 
 
+    @Override
+    public boolean isDestroyable() {
+        return false;
+    }
 }

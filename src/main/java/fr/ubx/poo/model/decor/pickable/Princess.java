@@ -8,4 +8,9 @@ public class Princess extends Pickable {
         player.GameWon();
     }
 
+    @Override
+    public boolean isDestroyable() {
+        return false;
+    }
+
 }

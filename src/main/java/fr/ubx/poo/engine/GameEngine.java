@@ -144,9 +144,8 @@ public final class GameEngine {
         if (game.hasLevelChanged()) {
             stage.close();
             initialize(stage, game);
-            game.levelChangeRequest();
+            game.levelChangedRequestDone();
         }
-
         if (game.getWorld().hasChanged()) {
             sprites.forEach(Sprite::remove);
             sprites.clear();
@@ -155,7 +154,7 @@ public final class GameEngine {
             spriteBombs.forEach(Sprite::remove);
             spriteBombs.clear();
             game.getWorld().getListBomb().forEach(bomb -> spriteBombs.add(SpriteFactory.createBomb(layer, bomb)));
-            game.getWorld().ChangeRequest();
+            game.getWorld().ChangeRequestDone();
         }
         if (player.isAlive() == false) {
             gameLoop.stop();
@@ -169,8 +168,8 @@ public final class GameEngine {
 
 
     private void render() {
-        sprites.forEach(Sprite::render);
         spriteBombs.forEach(Sprite::render);
+        sprites.forEach(Sprite::render);
         //last rendering to have player in the foreground
 
         spritePlayer.render();

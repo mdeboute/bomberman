@@ -14,7 +14,7 @@ public class World {
     private final Map<Position, Decor> grid;
     private final WorldEntity[][] raw;
     public final Dimension dimension;
-    public static int level;
+    public final int level;
     private boolean changed = false;
     protected Position doorNextOpenedPosition=null;
     protected Position doorPrevOpenedPosition=null;
@@ -54,8 +54,7 @@ public class World {
         return doorNextOpenedPosition;
     }
 
-
-    public Position getPrevLevelPositionBis() {
+    private Position getPrevLevelPositionBis() {
         for (int x = 0; x < dimension.width; x++) {
             for (int y = 0; y < dimension.height; y++) {
                 if (raw[y][x] == WorldEntity.DoorNextOpened) {
@@ -66,7 +65,7 @@ public class World {
         return null;
     }
 
-    public Position getNextLevelPositionBis() {
+    private Position getNextLevelPositionBis() {
         for (int x = 0; x < dimension.width; x++) {
             for (int y = 0; y < dimension.height; y++) {
                 if (raw[y][x] == WorldEntity.DoorPrevOpened) {
@@ -77,11 +76,9 @@ public class World {
         return null;
     }
 
-
     public boolean hasChanged() {
         return changed;
     }
-
 
     public Position findPlayer() throws PositionNotFoundException {
         for (int x = 0; x < dimension.width; x++) {
@@ -123,7 +120,11 @@ public class World {
     }
 
     public void ChangeRequest() {
-        changed = !changed;
+        changed = true;
+    }
+
+    public void ChangeRequestDone(){
+        changed = false;
     }
 
 }

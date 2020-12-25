@@ -14,5 +14,9 @@ public class DoorPrevOpened extends Pickable{
         return false;
     }
 
+    @Override
+    public boolean isDestroyable() {
+        return false;
+    }
 
 }

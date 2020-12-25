@@ -14,4 +14,9 @@ public class Box extends Decor {
     public boolean canWalk(Player player) {
         return false;
     }
+
+    @Override
+    public boolean isDestroyable() {
+        return true;
+    }
 }

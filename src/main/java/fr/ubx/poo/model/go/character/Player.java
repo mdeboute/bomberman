@@ -15,16 +15,19 @@ import fr.ubx.poo.model.go.GameObject;
 
 public class Player extends GameObject implements Movable {
 
+    public boolean godMod = false;
+    private Direction direction;
     private boolean alive = true;
-    Direction direction;
     private boolean moveRequested = false;
     private boolean DoorOpenRequested = false;
     private boolean BombRequested = false;
     private int lives = 1;
     private boolean winner;
-    private final int BombRange = 1;
-    private final int BombNumber = 1;
+    private int BombRange = 2;
+    private int BombNumber = 2;
     private int KeyValue = 0;
+    private int actualBombNumber = 0;
+    private long godModTimer = -1;
 
 
     public Player(Game game, Position position) {
@@ -85,16 +88,27 @@ public class Player extends GameObject implements Movable {
             if (game.getWorld().get(DoorPosition) instanceof DoorNextClosed && getKeyValue() > 0) {
                 clear();
                 game.getWorld().set(DoorPosition, new DoorNextOpened());
-                game.getWorld().setRaw(WorldEntity.DoorNextOpened,new Position(DoorPosition));
+                game.getWorld().setRaw(WorldEntity.DoorNextOpened, new Position(DoorPosition));
                 KeyValue -= 1;
             }
             DoorOpenRequested = false;
         }
         if (BombRequested) {
-            if(BombNumber > game.getNumberBombs()) {
-                game.getWorld().setBombRequest(new Bomb(game, getPosition(), now, World.level));
+            if (BombNumber > actualBombNumber) {
+                game.getWorld().setBombRequest(new Bomb(game, getPosition(), now, game.getWorld().level, this.BombRange));
+                actualBombNumber++;
             }
             BombRequested = false;
+
+        }
+        if (godMod) {
+            if (godModTimer < 0) {
+                godModTimer = now;
+            }
+            if (now - godModTimer > (long)1000000000) {
+                godMod = false;
+                godModTimer = -1;
+            }
         }
 
     }
@@ -105,30 +119,28 @@ public class Player extends GameObject implements Movable {
     }
 
     public void prevLevelRequest() {
+        Position pos =this.getPosition();
         try {
-            if (game.updateLevelRequest(-1)) {
-                Position newPosition = game.getWorld().getPrevLevelPosition();
-                this.setPosition(new Position(newPosition));
-                direction = Direction.S;
-            }
-        } catch (Exception e) {
-            game.updateLevelRequest(1);
+            Position nextPosition=game.updateLevelRequestPrev();
+            this.setPosition(nextPosition);
+            this.direction=Direction.S;
+        } catch (PositionNotFoundException e) {
+            this.setPosition(pos);
+            System.err.println("ERREUR CHANGEMENT DE MONDE PREV");
         } finally {
             game.getWorld().ChangeRequest();
         }
-
     }
 
     public void nextLevelRequest() {
-
+        Position pos =this.getPosition();
         try {
-            if (game.updateLevelRequest(1)) {
-                Position newPosition = game.getWorld().getNextLevelPosition();
-                this.setPosition(new Position(newPosition));
-                direction = Direction.S;
-            }
-        } catch (Exception e) {
-            game.updateLevelRequest(-1);
+            Position nextPosition=game.updateLevelRequestNext();
+            this.setPosition(nextPosition);
+            this.direction=Direction.S;
+        } catch (PositionNotFoundException e) {
+            this.setPosition(pos);
+            System.err.println("ERREUR CHANGEMENT DE MONDE NEXT");
         } finally {
             game.getWorld().ChangeRequest();
         }
@@ -154,8 +166,11 @@ public class Player extends GameObject implements Movable {
     }
 
     public void decreaseHeart() {
-        this.lives--;
-        this.alive = (lives > 0);
+        if (!godMod) {
+            this.lives--;
+            this.alive = (lives > 0);
+            godMod = true;
+        }
     }
 
     public boolean isWinner() {
@@ -188,5 +203,29 @@ public class Player extends GameObject implements Movable {
 
     public void BombRequest() {
         BombRequested = true;
+    }
+
+    public void decreaseActualBombNumber() {
+        actualBombNumber--;
+    }
+
+    public int getActualBombNumber() {
+        return actualBombNumber;
+    }
+
+    public void BombNumberInc() {
+        BombNumber++;
+    }
+
+    public void BombNumberDec() {
+        BombNumber--;
+    }
+
+    public void bombRangeDec() {
+        BombRange--;
+    }
+
+    public void bombRangeInc() {
+        BombRange++;
     }
 }

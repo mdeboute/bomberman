@@ -14,7 +14,6 @@ public class WorldFromFile extends World {
         super( TabFromFile(path,n), n );
     }
 
-
     public static WorldEntity [][] TabFromFile(String path, int n){
         WorldEntity[][] World_building = {{Player},{Empty}};
         try(InputStream input = new FileInputStream(new File(path, "config.properties"))){
