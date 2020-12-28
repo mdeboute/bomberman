@@ -5,17 +5,11 @@
 package fr.ubx.poo.view.sprite;
 
 import fr.ubx.poo.game.Position;
-import fr.ubx.poo.model.decor.Decor;
-import fr.ubx.poo.model.decor.DoorNextClosed;
-import fr.ubx.poo.model.decor.Stone;
-import fr.ubx.poo.model.decor.Tree;
+import fr.ubx.poo.model.decor.*;
+import fr.ubx.poo.model.decor.bonus.*;
 import fr.ubx.poo.model.decor.movable.Box;
-import fr.ubx.poo.model.decor.pickable.DoorNextOpened;
-import fr.ubx.poo.model.decor.pickable.DoorPrevOpened;
-import fr.ubx.poo.model.decor.pickable.Monster;
-import fr.ubx.poo.model.decor.pickable.Princess;
-import fr.ubx.poo.model.decor.pickable.bonus.*;
 import fr.ubx.poo.model.go.Bomb;
+import fr.ubx.poo.model.go.character.Monster;
 import fr.ubx.poo.model.go.character.Player;
 import fr.ubx.poo.view.image.ImageFactory;
 import javafx.scene.layout.Pane;
@@ -49,8 +43,6 @@ public final class SpriteFactory {
             return new SpriteDecor(layer, factory.get(DOORNEXTOPENED), position);
         if (decor instanceof DoorPrevOpened)
             return new SpriteDecor(layer, factory.get(DOORPREVOPENED), position);
-        if (decor instanceof Monster)
-            return new SpriteDecor(layer, factory.get(MONSTER), position);
         if (decor instanceof Key)
             return new SpriteDecor(layer, factory.get(KEY), position);
         if (decor instanceof Box)
@@ -65,6 +57,10 @@ public final class SpriteFactory {
 
     public static Sprite createBomb(Pane layer, Bomb bomb) {
         return new SpriteBomb(layer, bomb);
+    }
+
+    public static Sprite createMonster(Pane layer, Monster monster) {
+        return new SpriteMonster(layer, monster);
     }
 
 

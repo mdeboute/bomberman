@@ -5,6 +5,7 @@ import fr.ubx.poo.game.Game;
 import fr.ubx.poo.game.Position;
 import fr.ubx.poo.game.World;
 import fr.ubx.poo.model.decor.Decor;
+import fr.ubx.poo.model.go.character.Monster;
 import fr.ubx.poo.model.go.character.Player;
 
 public class Bomb extends GameObject {
@@ -28,7 +29,7 @@ public class Bomb extends GameObject {
         return isRemovable;
     }
 
-    @Override
+
     public void traitement(Player player) {
         Decor decor = world.get(getPosition());
         if (decor != null) {
@@ -57,6 +58,11 @@ public class Bomb extends GameObject {
 
                 if (player.getPosition().equals(nextPosition) && game.getCurrentLevel() == bombLevel) {
                     player.decreaseHeart();
+                }
+                for (Monster monster : world.getListMonster()) {
+                    if (monster.getPosition().equals(nextPosition)) {
+                        monster.decreaseHeart();
+                    }
                 }
 
                 nextPosition = direction.nextPosition(nextPosition);

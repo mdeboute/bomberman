@@ -1,11 +1,11 @@
-package fr.ubx.poo.model.decor.pickable.bonus;
+package fr.ubx.poo.model.decor.bonus;
 
 import fr.ubx.poo.model.go.character.Player;
 
-public class BombNumberInc extends Bonus {
+public class BombRangeDec extends Bonus {
     @Override
     public void traitement(Player player) {
-        player.BombNumberInc();
+        player.bombRangeDec();
         super.traitement(player);
     }
 }

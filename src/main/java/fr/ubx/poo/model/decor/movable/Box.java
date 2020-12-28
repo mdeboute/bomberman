@@ -11,11 +11,6 @@ public class Box extends Decor {
     }
 
     @Override
-    public boolean canWalk(Player player) {
-        return false;
-    }
-
-    @Override
     public boolean isDestroyable() {
         return true;
     }

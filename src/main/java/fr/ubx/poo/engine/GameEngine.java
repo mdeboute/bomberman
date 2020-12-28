@@ -33,7 +33,8 @@ public final class GameEngine {
     private final Game game;
     private final Player player;
     private final List<Sprite> sprites = new ArrayList<>();
-    private final List<Sprite> spriteBombs = new ArrayList<Sprite>();
+    private final List<Sprite> spriteBombs = new ArrayList<>();
+    private final List<Sprite> spriteMonsters = new ArrayList<>();
     private StatusBar statusBar;
     private Pane layer;
     private Input input;
@@ -69,7 +70,9 @@ public final class GameEngine {
         statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
         // Create decor sprites
         game.getWorld().forEach((pos, d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
+
         spritePlayer = SpriteFactory.createPlayer(layer, player);
+        game.getWorld().getListMonster().forEach(monster -> spriteMonsters.add(SpriteFactory.createMonster(layer, monster)));
     }
 
     protected final void buildAndSetGameLoop() {
@@ -141,6 +144,10 @@ public final class GameEngine {
             L.forEach(bomb -> bomb.stateCalculator(now));
             L.removeIf(Bomb::isRemovable);
         });
+        game.getListMonsters().forEach(L -> {
+            L.forEach(monster -> monster.update(now));
+            L.removeIf(monster -> !monster.isAlive());
+        });
         if (game.hasLevelChanged()) {
             stage.close();
             initialize(stage, game);
@@ -154,6 +161,11 @@ public final class GameEngine {
             spriteBombs.forEach(Sprite::remove);
             spriteBombs.clear();
             game.getWorld().getListBomb().forEach(bomb -> spriteBombs.add(SpriteFactory.createBomb(layer, bomb)));
+            // Gestion des monstres
+            spriteMonsters.forEach(Sprite::remove);
+            spriteMonsters.clear();
+            game.getWorld().getListMonster().forEach(monster -> spriteMonsters.add(SpriteFactory.createMonster(layer, monster)));
+
             game.getWorld().ChangeRequestDone();
         }
         if (player.isAlive() == false) {
@@ -170,8 +182,8 @@ public final class GameEngine {
     private void render() {
         spriteBombs.forEach(Sprite::render);
         sprites.forEach(Sprite::render);
+        spriteMonsters.forEach(Sprite::render);
         //last rendering to have player in the foreground
-
         spritePlayer.render();
 
     }

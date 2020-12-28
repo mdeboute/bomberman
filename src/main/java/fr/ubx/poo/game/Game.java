@@ -6,6 +6,7 @@ package fr.ubx.poo.game;
 
 
 import fr.ubx.poo.model.go.Bomb;
+import fr.ubx.poo.model.go.character.Monster;
 import fr.ubx.poo.model.go.character.Player;
 
 import java.io.File;
@@ -13,22 +14,52 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
 public class Game {
-    private final List<World> worlds;
-    private World world;
-    private final Player player;
-    private final String worldPath;
-    public int initPlayerLives;
     private static int currentLevel = 1;
     private static int levels;
+    private final List<World> worlds;
+    private final Player player;
+    private final String worldPath;
+    private final List<List<Bomb>> listBombs = new LinkedList<>();
+    private final List<List<Monster>> listMonsters = new ArrayList<>();
+    public int initPlayerLives;
+    private World world;
     private boolean levelChange = false;
-    private final List<List<Bomb>> ListBombs = new ArrayList<>();
+
+    public Game(String worldPath) {
+        loadConfig(worldPath);
+        worlds = new ArrayList<World>(levels);
+        for (int i = 1; i <= levels; i++) {
+            World Level_i = new WorldFromFile(worldPath, i);
+            worlds.add(Level_i);
+            listBombs.add(Level_i.getListBomb());
+        }
+        this.world = worlds.get(0);
+        this.worldPath = worldPath;
+        Position positionPlayer = null;
+        try {
+            positionPlayer = world.findPlayer();
+            player = new Player(this, positionPlayer);
+        } catch (PositionNotFoundException e) {
+            System.err.println("Position not found : " + e.getLocalizedMessage());
+            throw new RuntimeException(e);
+        }
+        // initialisation listMonster
+        for (World world : worlds) {
+            this.listMonsters.add(world.initMonsters(this));
+        }
+    }
+
+    public List<List<Monster>> getListMonsters() {
+        return listMonsters;
+    }
 
     public List<List<Bomb>> getListBombs() {
-        return ListBombs;
+        return listBombs;
     }
 
     public boolean hasLevelChanged() {
@@ -45,26 +76,6 @@ public class Game {
 
     public int getCurrentLevel() {
         return currentLevel;
-    }
-
-    public Game(String worldPath) {
-        loadConfig(worldPath);
-        worlds = new ArrayList<World>(levels);
-        for (int i = 1; i <= levels; i++) {
-            World Level_i = new WorldFromFile(worldPath, i);
-            worlds.add(Level_i);
-            ListBombs.add(Level_i.getListBomb());
-        }
-        this.world = worlds.get(0);
-        this.worldPath = worldPath;
-        Position positionPlayer = null;
-        try {
-            positionPlayer = world.findPlayer();
-            player = new Player(this, positionPlayer);
-        } catch (PositionNotFoundException e) {
-            System.err.println("Position not found : " + e.getLocalizedMessage());
-            throw new RuntimeException(e);
-        }
     }
 
     public int getInitPlayerLives() {
@@ -99,10 +110,10 @@ public class Game {
     }
 
     public Position updateLevelRequestNext() throws PositionNotFoundException {
-        if (this.getLevels() >= this.getCurrentLevel() + 1 && this.getCurrentLevel() + 1 >= 1){
-            World worldTmp= worlds.get( (currentLevel - 1) + 1);
+        if (this.getLevels() >= this.getCurrentLevel() + 1 && this.getCurrentLevel() + 1 >= 1) {
+            World worldTmp = worlds.get((currentLevel - 1) + 1);
             Position newPosition = worldTmp.getNextLevelPosition();
-            if(newPosition!=null){
+            if (newPosition != null) {
                 this.world = worldTmp;
                 currentLevel = currentLevel + 1;
                 return newPosition;
@@ -112,10 +123,10 @@ public class Game {
     }
 
     public Position updateLevelRequestPrev() throws PositionNotFoundException {
-        if (this.getLevels() >= this.getCurrentLevel() - 1 && this.getCurrentLevel() - 1 >= 1){
-            World worldTmp= worlds.get( (currentLevel - 1) - 1);
+        if (this.getLevels() >= this.getCurrentLevel() - 1 && this.getCurrentLevel() - 1 >= 1) {
+            World worldTmp = worlds.get((currentLevel - 1) - 1);
             Position newPosition = worldTmp.getPrevLevelPosition();
-            if(newPosition!=null){
+            if (newPosition != null) {
                 this.world = worldTmp;
                 currentLevel = currentLevel - 1;
                 return newPosition;

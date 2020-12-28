@@ -5,26 +5,19 @@
 package fr.ubx.poo.model.go.character;
 
 import fr.ubx.poo.game.*;
-import fr.ubx.poo.model.Movable;
 import fr.ubx.poo.model.decor.Decor;
 import fr.ubx.poo.model.decor.DoorNextClosed;
+import fr.ubx.poo.model.decor.DoorNextOpened;
 import fr.ubx.poo.model.decor.movable.Box;
-import fr.ubx.poo.model.decor.pickable.DoorNextOpened;
 import fr.ubx.poo.model.go.Bomb;
-import fr.ubx.poo.model.go.GameObject;
 
-public class Player extends GameObject implements Movable {
-
+public class Player extends Character {
     public boolean godMod = false;
-    private Direction direction;
-    private boolean alive = true;
-    private boolean moveRequested = false;
     private boolean DoorOpenRequested = false;
     private boolean BombRequested = false;
-    private int lives = 1;
     private boolean winner;
-    private int BombRange = 2;
-    private int BombNumber = 2;
+    private int BombRange = 1;
+    private int BombNumber = 1;
     private int KeyValue = 0;
     private int actualBombNumber = 0;
     private long godModTimer = -1;
@@ -36,27 +29,6 @@ public class Player extends GameObject implements Movable {
         this.lives = game.getInitPlayerLives();
     }
 
-    public int getLives() {
-        return lives;
-    }
-
-    public Direction getDirection() {
-        return direction;
-    }
-
-    public void requestMove(Direction direction) {
-        if (direction != this.direction) {
-            this.direction = direction;
-        }
-        moveRequested = true;
-    }
-
-    public void levelChangeRequest() {
-        game.levelChangeRequest();
-    }
-
-
-    @Override
     public boolean canMove(Direction direction) {
         Dimension dimension = game.getWorld().dimension;
         Position nextPos = direction.nextPosition(getPosition());
@@ -71,18 +43,17 @@ public class Player extends GameObject implements Movable {
         return false;
     }
 
-    public void doMove(Direction direction) {
-        Position nextPos = direction.nextPosition(getPosition());
-        setPosition(nextPos);
+
+    public int getLives() {
+        return lives;
+    }
+
+    public void levelChangeRequest() {
+        game.levelChangeRequest();
     }
 
     public void update(long now) {
-        if (moveRequested) {
-            if (canMove(direction)) {
-                doMove(direction);
-            }
-            moveRequested = false;
-        }
+        super.update(now);
         if (DoorOpenRequested) {
             Position DoorPosition = direction.nextPosition(getPosition());
             if (game.getWorld().get(DoorPosition) instanceof DoorNextClosed && getKeyValue() > 0) {
@@ -105,12 +76,16 @@ public class Player extends GameObject implements Movable {
             if (godModTimer < 0) {
                 godModTimer = now;
             }
-            if (now - godModTimer > (long)1000000000) {
+            if (now - godModTimer > (long) 1000000000) {
                 godMod = false;
                 godModTimer = -1;
             }
         }
-
+        for (Monster monster : game.getWorld().getListMonster()) {
+            if (getPosition().equals(monster.getPosition())) {
+                this.decreaseHeart();
+            }
+        }
     }
 
     public void clear() {
@@ -119,11 +94,11 @@ public class Player extends GameObject implements Movable {
     }
 
     public void prevLevelRequest() {
-        Position pos =this.getPosition();
+        Position pos = this.getPosition();
         try {
-            Position nextPosition=game.updateLevelRequestPrev();
+            Position nextPosition = game.updateLevelRequestPrev();
             this.setPosition(nextPosition);
-            this.direction=Direction.S;
+            this.direction = Direction.S;
         } catch (PositionNotFoundException e) {
             this.setPosition(pos);
             System.err.println("ERREUR CHANGEMENT DE MONDE PREV");
@@ -133,11 +108,11 @@ public class Player extends GameObject implements Movable {
     }
 
     public void nextLevelRequest() {
-        Position pos =this.getPosition();
+        Position pos = this.getPosition();
         try {
-            Position nextPosition=game.updateLevelRequestNext();
+            Position nextPosition = game.updateLevelRequestNext();
             this.setPosition(nextPosition);
-            this.direction=Direction.S;
+            this.direction = Direction.S;
         } catch (PositionNotFoundException e) {
             this.setPosition(pos);
             System.err.println("ERREUR CHANGEMENT DE MONDE NEXT");
@@ -152,8 +127,14 @@ public class Player extends GameObject implements Movable {
         Position boxNextPosition = direction.nextPosition(boxPosition);
         Dimension dimension = game.getWorld().dimension;
         if (boxNextPosition.inside(dimension) && game.getWorld().isEmpty(boxNextPosition)) {
+            for (Monster monster : game.getWorld().getListMonster()) {
+                if (monster.getPosition().equals(boxNextPosition)) {
+                    return;
+                }
+            }
             game.getWorld().set(boxNextPosition, new Box());
             this.clear();
+
         }
     }
 
@@ -165,10 +146,10 @@ public class Player extends GameObject implements Movable {
         this.lives++;
     }
 
+    @Override
     public void decreaseHeart() {
         if (!godMod) {
-            this.lives--;
-            this.alive = (lives > 0);
+            super.decreaseHeart();
             godMod = true;
         }
     }
@@ -177,9 +158,6 @@ public class Player extends GameObject implements Movable {
         return this.winner;
     }
 
-    public boolean isAlive() {
-        return this.alive;
-    }
 
     public int getBombRange() {
         return this.BombRange;
@@ -218,11 +196,13 @@ public class Player extends GameObject implements Movable {
     }
 
     public void BombNumberDec() {
-        BombNumber--;
+        if (BombNumber > 1)
+            BombNumber--;
     }
 
     public void bombRangeDec() {
-        BombRange--;
+        if (BombRange > 1)
+            BombRange--;
     }
 
     public void bombRangeInc() {
