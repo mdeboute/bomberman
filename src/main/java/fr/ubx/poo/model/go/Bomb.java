@@ -38,8 +38,17 @@ public class Bomb extends GameObject {
             }
             if (decor.isStoppingBlast()) {
                 world.ChangeRequest();
+                player.decreaseActualBombNumber();
                 traitement = false;
                 return;
+            }
+        }
+        if (player.getPosition().equals(this.getPosition()) && game.getCurrentLevel() == bombLevel) {
+            player.decreaseHeart();
+        }
+        for (Monster monster : world.getListMonster()) {
+            if (monster.getPosition().equals(this.getPosition())) {
+                monster.decreaseHeart();
             }
         }
         for (Direction direction : Direction.values()) {
