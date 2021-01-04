@@ -11,9 +11,8 @@ import static fr.ubx.poo.game.WorldEntity.*;
 public class WorldFromFile extends World {
 
     public WorldFromFile(String path,int n){
-        super( TabFromFile(path,n));
+        super( TabFromFile(path,n), n );
     }
-
 
     public static WorldEntity [][] TabFromFile(String path, int n){
         WorldEntity[][] World_building = {{Player},{Empty}};

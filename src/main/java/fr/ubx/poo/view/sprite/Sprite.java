@@ -12,9 +12,9 @@ import javafx.scene.layout.Pane;
 public abstract class Sprite {
 
     public static final int size = 40;
-    private final Pane layer;
-    private ImageView imageView;
-    private Image image;
+    protected final Pane layer;
+    protected ImageView imageView;
+    protected Image image;
 
     public Sprite(Pane layer, Image image) {
         this.layer = layer;
@@ -31,7 +31,7 @@ public abstract class Sprite {
 
     public abstract Position getPosition();
 
-    public final void render() {
+    public void render() {
         if (imageView != null) {
             remove();
         }

@@ -5,11 +5,11 @@
 package fr.ubx.poo.engine;
 
 import fr.ubx.poo.game.Direction;
-import fr.ubx.poo.model.decor.Box;
+import fr.ubx.poo.game.Game;
+import fr.ubx.poo.model.go.Bomb;
+import fr.ubx.poo.model.go.character.Player;
 import fr.ubx.poo.view.sprite.Sprite;
 import fr.ubx.poo.view.sprite.SpriteFactory;
-import fr.ubx.poo.game.Game;
-import fr.ubx.poo.model.go.character.Player;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.Group;
@@ -33,6 +33,8 @@ public final class GameEngine {
     private final Game game;
     private final Player player;
     private final List<Sprite> sprites = new ArrayList<>();
+    private final List<Sprite> spriteBombs = new ArrayList<>();
+    private final List<Sprite> spriteMonsters = new ArrayList<>();
     private StatusBar statusBar;
     private Pane layer;
     private Input input;
@@ -51,7 +53,6 @@ public final class GameEngine {
         this.stage = stage;
         Group root = new Group();
         layer = new Pane();
-
         int height = game.getWorld().dimension.height;
         int width = game.getWorld().dimension.width;
         int sceneWidth = width * Sprite.size;
@@ -68,8 +69,10 @@ public final class GameEngine {
         root.getChildren().add(layer);
         statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
         // Create decor sprites
-        game.getWorld().forEach( (pos,d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
+        game.getWorld().forEach((pos, d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
+
         spritePlayer = SpriteFactory.createPlayer(layer, player);
+        game.getWorld().getListMonster().forEach(monster -> spriteMonsters.add(SpriteFactory.createMonster(layer, monster)));
     }
 
     protected final void buildAndSetGameLoop() {
@@ -106,6 +109,12 @@ public final class GameEngine {
         if (input.isMoveUp()) {
             player.requestMove(Direction.N);
         }
+        if (input.isEnter()) {
+            player.requestDoorOpen();
+        }
+        if (input.isSpace()) {
+            player.BombRequest();
+        }
         input.clear();
     }
 
@@ -131,28 +140,52 @@ public final class GameEngine {
 
     private void update(long now) {
         player.update(now);
-        if(game.getWorld().hasChanged()){
-            initialize(stage,game);
+        game.getListBombs().forEach(L -> {
+            L.forEach(bomb -> bomb.stateCalculator(now));
+            L.removeIf(Bomb::isRemovable);
+        });
+        game.getListMonsters().forEach(L -> {
+            L.forEach(monster -> monster.update(now));
+            L.removeIf(monster -> !monster.isAlive());
+        });
+        if (game.hasLevelChanged()) {
+            stage.close();
+            initialize(stage, game);
+            game.levelChangedRequestDone();
+        }
+        if (game.getWorld().hasChanged()) {
             sprites.forEach(Sprite::remove);
             sprites.clear();
-            game.getWorld().forEach( (pos,d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
-            game.getWorld().ChangeRequest();
-        }
+            game.getWorld().forEach((pos, d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
+            // Gestion des bombes
+            spriteBombs.forEach(Sprite::remove);
+            spriteBombs.clear();
+            game.getWorld().getListBomb().forEach(bomb -> spriteBombs.add(SpriteFactory.createBomb(layer, bomb)));
+            // Gestion des monstres
+            spriteMonsters.forEach(Sprite::remove);
+            spriteMonsters.clear();
+            game.getWorld().getListMonster().forEach(monster -> spriteMonsters.add(SpriteFactory.createMonster(layer, monster)));
 
+            game.getWorld().ChangeRequestDone();
+        }
         if (player.isAlive() == false) {
             gameLoop.stop();
-            showMessage("Perdu!", Color.RED);
+            showMessage("Perdu! BG", Color.RED);
         }
         if (player.isWinner()) {
             gameLoop.stop();
-            showMessage("Gagné", Color.BLUE);
+            showMessage("Gagné BG", Color.BLUE);
         }
     }
 
+
     private void render() {
+        spriteBombs.forEach(Sprite::render);
         sprites.forEach(Sprite::render);
+        spriteMonsters.forEach(Sprite::render);
         //last rendering to have player in the foreground
         spritePlayer.render();
+
     }
 
     public void start() {

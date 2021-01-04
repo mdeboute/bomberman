@@ -61,6 +61,13 @@ public final class Input {
     public boolean isMoveUp() {
         return is(UP) && !is(DOWN);
     }
+    public boolean isEnter(){
+        return is(ENTER);
+    }
+    public boolean isSpace(){
+        return is(SPACE);
+    }
+
 
     public boolean isMoveDown() {
         return is(DOWN) && !is(UP);
