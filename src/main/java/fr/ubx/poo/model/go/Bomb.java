@@ -64,6 +64,11 @@ public class Bomb extends GameObject {
                         monster.decreaseHeart();
                     }
                 }
+                for(Bomb bomb : world.getListBomb()){
+                    if(bomb.getPosition().equals((nextPosition))){
+                        bomb.collision();
+                    }
+                }
 
                 nextPosition = direction.nextPosition(nextPosition);
             }
@@ -71,6 +76,9 @@ public class Bomb extends GameObject {
         world.ChangeRequest();
         player.decreaseActualBombNumber();
         traitement = false;
+    }
+    public void collision(){
+        this.state=4;
     }
 
     public int getState() {
