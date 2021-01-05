@@ -51,6 +51,11 @@ public class Bomb extends GameObject {
                 monster.decreaseHeart();
             }
         }
+        for(Bomb bomb : world.getListBomb()){
+            if(bomb.getPosition().equals((this.getPosition()))){
+                bomb.collision();
+            }
+        }
         for (Direction direction : Direction.values()) {
             Position nextPosition = direction.nextPosition(getPosition());
             for (int i = 0; i < bombRange; i++) {
