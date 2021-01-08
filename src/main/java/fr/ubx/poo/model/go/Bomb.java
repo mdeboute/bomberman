@@ -30,7 +30,7 @@ public class Bomb extends GameObject {
     }
 
 
-    public void traitement(Player player) {
+    public void traitement(Player player,long now) {
         Decor decor = world.get(getPosition());
         if (decor != null) {
             if (decor.isDestroyable()) {
@@ -53,7 +53,7 @@ public class Bomb extends GameObject {
         }
         for(Bomb bomb : world.getListBomb()){
             if(bomb.getPosition().equals((this.getPosition()))){
-                bomb.collision();
+                bomb.collision(now);
             }
         }
         for (Direction direction : Direction.values()) {
@@ -80,7 +80,7 @@ public class Bomb extends GameObject {
                 }
                 for(Bomb bomb : world.getListBomb()){
                     if(bomb.getPosition().equals((nextPosition))){
-                        bomb.collision();
+                        bomb.collision(now);
                     }
                 }
 
@@ -91,8 +91,9 @@ public class Bomb extends GameObject {
         player.decreaseActualBombNumber();
         traitement = false;
     }
-    public void collision(){
+    private void collision(long now){
         this.state=4;
+        this.armTime=now;
     }
 
     public int getState() {
@@ -102,7 +103,7 @@ public class Bomb extends GameObject {
     public void stateCalculator(long now) {
         boolean secondePassed = now - armTime >= (long) 1000000000;
         if (state == 4 && traitement) {
-            this.traitement(game.getPlayer());
+            this.traitement(game.getPlayer(),now);
         }
         if (state == 4 && secondePassed) {
             isRemovable = (true);
