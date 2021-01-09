@@ -6,10 +6,10 @@ import fr.ubx.poo.model.decor.Decor;
 import java.util.Random;
 
 public class Monster extends Character {
-    World world;
-    Random rand = new Random();
-    long randomSeconds;
-    long moveTimer = -1;
+    private final World world;
+    private final Random rand = new Random();
+    private long randomSeconds;
+    private long moveTimer = -1;
 
 
     public Monster(Game game, Position position, World world) {
