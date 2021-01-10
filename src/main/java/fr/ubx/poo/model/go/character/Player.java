@@ -187,10 +187,6 @@ public class Player extends Character {
         actualBombNumber--;
     }
 
-    public int getActualBombNumber() {
-        return actualBombNumber;
-    }
-
     public void BombNumberInc() {
         BombNumber++;
     }

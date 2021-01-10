@@ -27,8 +27,8 @@ public abstract class Character extends GameObject implements Movable {
         return direction;
     }
 
-    public boolean isAlive() {
-        return this.alive;
+    public boolean IsAlive() {
+        return !this.alive;
     }
 
 

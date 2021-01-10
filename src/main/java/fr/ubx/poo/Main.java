@@ -7,14 +7,14 @@ package fr.ubx.poo;
 import fr.ubx.poo.engine.GameEngine;
 import fr.ubx.poo.game.Game;
 import fr.ubx.poo.view.image.ImageFactory;
-import fr.ubx.poo.view.sprite.Sprite;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
+
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
 public class Main extends Application {
-    //TODO comentry
     @Override
     public void start(Stage stage) {
         ImageFactory.getInstance().load();
@@ -25,9 +25,7 @@ public class Main extends Application {
         GameEngine engine = new GameEngine("UBomb", game, stage);
         engine.start();
     }
-
     public static void main(String[] args) {
         launch(args);
     }
-
 }

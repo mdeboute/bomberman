@@ -35,7 +35,7 @@ public class Monster extends Character {
     }
 
     private void resetRandom() {
-        randomSeconds = (long) (rand.nextInt(2000) + 1000);
+        randomSeconds = rand.nextInt(2000) + 1000;
     }
 
     @Override

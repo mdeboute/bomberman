@@ -20,27 +20,27 @@ public final class Input {
      * released.
      */
     private final BitSet keyboardBitSet = new BitSet();
-    /**
-     * "Key Pressed" handler for all input events: register pressed key in the bitset
-     */
-    private final EventHandler<KeyEvent> keyPressedEventHandler = event -> {
-
-        // register key down
-        keyboardBitSet.set(event.getCode().ordinal(), true);
-    };
-    /**
-     * "Key Released" handler for all input events: unregister released key in the bitset
-     */
-    private final EventHandler<KeyEvent> keyReleasedEventHandler = event -> {
-
-        // register key up
-        keyboardBitSet.set(event.getCode().ordinal(), false);
-    };
-    private final Scene scene;
 
     public Input(Scene scene) {
-        this.scene = scene;
+        /*
+         * "Key Pressed" handler for all input events: register pressed key in the bitset
+         */
+        // register key down
+        EventHandler<KeyEvent> keyPressedEventHandler = event -> {
+
+            // register key down
+            keyboardBitSet.set(event.getCode().ordinal(), true);
+        };
         scene.addEventFilter(KeyEvent.KEY_PRESSED, keyPressedEventHandler);
+        /*
+         * "Key Released" handler for all input events: unregister released key in the bitset
+         */
+        // register key up
+        EventHandler<KeyEvent> keyReleasedEventHandler = event -> {
+
+            // register key up
+            keyboardBitSet.set(event.getCode().ordinal(), false);
+        };
         scene.addEventFilter(KeyEvent.KEY_RELEASED, keyReleasedEventHandler);
     }
 
@@ -61,10 +61,12 @@ public final class Input {
     public boolean isMoveUp() {
         return is(UP) && !is(DOWN);
     }
-    public boolean isEnter(){
+
+    public boolean isEnter() {
         return is(ENTER);
     }
-    public boolean isSpace(){
+
+    public boolean isSpace() {
         return is(SPACE);
     }
 
@@ -79,14 +81,6 @@ public final class Input {
 
     public boolean isMoveRight() {
         return is(RIGHT) && !is(LEFT);
-    }
-
-    public boolean isBomb() {
-        return is(SPACE);
-    }
-
-    public boolean isKey() {
-        return is(ENTER);
     }
 
     public boolean isExit() {

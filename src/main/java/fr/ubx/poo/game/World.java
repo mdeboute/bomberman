@@ -19,8 +19,8 @@ public class World {
     protected Position doorNextOpenedPosition = null;
     protected Position doorPrevOpenedPosition = null;
     private boolean changed = false;
-    private List<Bomb> listBomb = new LinkedList<>();
-    private List<Monster> listMonster = new ArrayList<>();
+    private final List<Bomb> listBomb = new LinkedList<>();
+    private final List<Monster> listMonster = new ArrayList<>();
 
     public World(WorldEntity[][] raw, int level) {
         this.raw = raw;

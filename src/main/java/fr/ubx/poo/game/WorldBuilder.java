@@ -27,35 +27,21 @@ public class WorldBuilder {
     }
 
     private static Decor processEntity(WorldEntity entity) {
-        switch (entity) {
-            case Box:
-                return new Box();
-            case Key:
-                return new Key();
-            case DoorNextOpened:
-                return new DoorNextOpened();
-            case DoorPrevOpened:
-                return new DoorPrevOpened();
-            case DoorNextClosed:
-                return new DoorNextClosed();
-            case Heart:
-                return new Heart();
-            case BombNumberDec:
-                return new BombNumberDec();
-            case BombNumberInc:
-                return new BombNumberInc();
-            case BombRangeDec:
-                return new BombRangeDec();
-            case BombRangeInc:
-                return new BombRangeInc();
-            case Princess:
-                return new Princess();
-            case Stone:
-                return new Stone();
-            case Tree:
-                return new Tree();
-            default:
-                return null;
-        }
+        return switch (entity) {
+            case Box -> new Box();
+            case Key -> new Key();
+            case DoorNextOpened -> new DoorNextOpened();
+            case DoorPrevOpened -> new DoorPrevOpened();
+            case DoorNextClosed -> new DoorNextClosed();
+            case Heart -> new Heart();
+            case BombNumberDec -> new BombNumberDec();
+            case BombNumberInc -> new BombNumberInc();
+            case BombRangeDec -> new BombRangeDec();
+            case BombRangeInc -> new BombRangeInc();
+            case Princess -> new Princess();
+            case Stone -> new Stone();
+            case Tree -> new Tree();
+            default -> null;
+        };
     }
 }

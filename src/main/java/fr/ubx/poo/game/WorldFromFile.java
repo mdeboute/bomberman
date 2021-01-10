@@ -3,10 +3,10 @@ package fr.ubx.poo.game;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Properties;
 
-import static fr.ubx.poo.game.WorldEntity.*;
+import static fr.ubx.poo.game.WorldEntity.Empty;
+import static fr.ubx.poo.game.WorldEntity.Player;
 
 public class WorldFromFile extends World {
 
@@ -23,7 +23,7 @@ public class WorldFromFile extends World {
             String prefix =prop.getProperty("prefix","level");
 
             BufferedReader br = new BufferedReader(new FileReader( new File(path, prefix+n +".txt")));
-            List<char[]> L =new ArrayList<char[]>();
+            List<char[]> L = new ArrayList<>();
             String s;
 
             while((s=br.readLine()) != null){
@@ -37,9 +37,8 @@ public class WorldFromFile extends World {
             br.close();
         }catch(IOException ex){
             System.err.println("Error loading file");
-        }finally {
-            return World_building;
         }
+        return World_building;
     }
 
 

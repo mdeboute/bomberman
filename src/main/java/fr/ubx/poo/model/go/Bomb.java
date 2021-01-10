@@ -30,7 +30,7 @@ public class Bomb extends GameObject {
     }
 
 
-    public void traitement(Player player,long now) {
+    public void treatment(Player player, long now) {
         Decor decor = world.get(getPosition());
         if (decor != null) {
             if (decor.isDestroyable()) {
@@ -103,7 +103,7 @@ public class Bomb extends GameObject {
     public void stateCalculator(long now) {
         boolean secondePassed = now - armTime >= (long) 1000000000;
         if (state == 4 && traitement) {
-            this.traitement(game.getPlayer(),now);
+            this.treatment(game.getPlayer(),now);
         }
         if (state == 4 && secondePassed) {
             isRemovable = (true);

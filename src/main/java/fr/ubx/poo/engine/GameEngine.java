@@ -10,6 +10,7 @@ import fr.ubx.poo.model.go.Bomb;
 import fr.ubx.poo.model.go.character.Player;
 import fr.ubx.poo.view.sprite.Sprite;
 import fr.ubx.poo.view.sprite.SpriteFactory;
+
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.Group;
@@ -67,7 +68,7 @@ public final class GameEngine {
 
         input = new Input(scene);
         root.getChildren().add(layer);
-        statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
+        statusBar = new StatusBar(root, sceneWidth, sceneHeight);
         // Create decor sprites
         game.getWorld().forEach((pos, d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
 
@@ -79,7 +80,7 @@ public final class GameEngine {
         gameLoop = new AnimationTimer() {
             public void handle(long now) {
                 // Check keyboard actions
-                processInput(now);
+                processInput();
 
                 // Do actions
                 update(now);
@@ -91,7 +92,7 @@ public final class GameEngine {
         };
     }
 
-    private void processInput(long now) {
+    private void processInput() {
         if (input.isExit()) {
             gameLoop.stop();
             Platform.exit();
@@ -132,7 +133,7 @@ public final class GameEngine {
         stage.show();
         new AnimationTimer() {
             public void handle(long now) {
-                processInput(now);
+                processInput();
             }
         }.start();
     }
@@ -146,7 +147,7 @@ public final class GameEngine {
         });
         game.getListMonsters().forEach(L -> {
             L.forEach(monster -> monster.update(now));
-            L.removeIf(monster -> !monster.isAlive());
+            L.removeIf(monster -> monster.IsAlive());
         });
         if (game.hasLevelChanged()) {
             stage.close();
@@ -168,13 +169,13 @@ public final class GameEngine {
 
             game.getWorld().ChangeRequestDone();
         }
-        if (player.isAlive() == false) {
+        if (player.IsAlive()) {
             gameLoop.stop();
-            showMessage("Perdu! BG", Color.RED);
+            showMessage("Perdu !", Color.RED);
         }
         if (player.isWinner()) {
             gameLoop.stop();
-            showMessage("Gagné BG", Color.BLUE);
+            showMessage("Gagné !", Color.BLUE);
         }
     }
 

@@ -27,6 +27,6 @@ public abstract class Decor extends Entity {
     public void traitement(Player player) {
     }
 
-    public void traitement(Character character) {
+    public void traitement() {
     }
 }

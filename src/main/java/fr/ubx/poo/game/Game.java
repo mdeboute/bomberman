@@ -23,7 +23,6 @@ public class Game {
     private static int levels;
     private final List<World> worlds;
     private final Player player;
-    private final String worldPath;
     private final List<List<Bomb>> listBombs = new LinkedList<>();
     private final List<List<Monster>> listMonsters = new ArrayList<>();
     public int initPlayerLives;
@@ -32,15 +31,14 @@ public class Game {
 
     public Game(String worldPath) {
         loadConfig(worldPath);
-        worlds = new ArrayList<World>(levels);
+        worlds = new ArrayList<>(levels);
         for (int i = 1; i <= levels; i++) {
             World Level_i = new WorldFromFile(worldPath, i);
             worlds.add(Level_i);
             listBombs.add(Level_i.getListBomb());
         }
         this.world = worlds.get(0);
-        this.worldPath = worldPath;
-        Position positionPlayer = null;
+        Position positionPlayer;
         try {
             positionPlayer = world.findPlayer();
             player = new Player(this, positionPlayer);
